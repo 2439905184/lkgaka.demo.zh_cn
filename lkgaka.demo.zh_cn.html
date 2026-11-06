@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Ikagaka Demo</title>
+    <link rel="stylesheet" href="./css/index.css">
+    <meta name="viewport" content="width=device-width, target-densitydpi=low-dpi, initial-scale=0.5">
+    <script src="./vendor/js/es6-shim.js"></script>
+    <script src="./vendor/js/bluebird.js"></script>
+    <script src="./vendor/js/encoding.js"></script>
+    <script src="./vendor/js/browserfs.js"></script>
+    <script src="./vendor/js/shiorijk.js"></script>
+    <script src="./vendor/js/jszip.js"></script>
+    <script src="./vendor/js/eventemitter2.js"></script>
+    <script src="./vendor/js/NarLoader.js"></script>
+    <script src="./vendor/js/NanikaStorage.js"></script>
+    <script src="./vendor/js/NanikaStorage.backend.FS.js"></script>
+    <script src="./vendor/js/cuttlebone.js"></script>
+    <script src="./vendor/js/SakuraScriptPlayer.js"></script>
+    <script src="./vendor/js/ShioriLoader.js"></script>
+    <script src="./vendor/js/shioridetector-common_names.js"></script>
+    <script src="./vendor/js/WorkerClient.js"></script>
+    <script src="./vendor/js/URLWorkerClient.js"></script>
+    <script src="./vendor/js/NativeShioriWorkerClient.js"></script>
+    <script src="./vendor/js/kawariworker.js"></script>
+    <script src="./vendor/js/kawari7worker.js"></script>
+    <script src="./vendor/js/satoriworker.js"></script>
+    <script src="./vendor/js/yayaworker.js"></script>
+    <script src="./vendor/js/aya5worker.js"></script>
+    <script src="./vendor/js/NanikaDefaultEventDefinition.js"></script>
+    <script src="./vendor/js/ua-parser.js"></script>
+    <script src="./vendor/js/useragent_parser.js"></script>
+    <script src="./vendor/js/NanikaDefaultPlugin.js"></script>
+    <script src="./vendor/js/Nanika.js"></script>
+    <script src="./vendor/js/NanikaManager.js"></script>
+    <script src="./js/demo.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1><a href="https://github.com/Ikagaka" target="_blank">イカガカ</a></h1><small>Web 基础软件</small>
+    </header>
+    <article>
+      <section class="ikagaka">
+        <p class="baseware">
+          <button id="ikagaka_boot">启动基础软件</button>
+          <button id="ikagaka_halt">结束基础软件</button>
+        </p>
+        <p class="baseware">
+          <button id="ikagaka_clean">清除所有安装信息</button>
+        </p>
+        <p class="baseware"><a href="vendor/nar/ikaga.nar" target="_blank">Ikagaka 默认 Ghost nar</a></p>
+      </section>
+      <section>
+        <h2>使用方法</h2>
+        <p>基本上与 SSP 相同。</p>
+        <ul>
+          <li>将 nar 拖放到 Ghost 上进行安装</li>
+          <li>通过右键菜单进行各种操作</li>
+          <li>可以保存状态。请通过“结束基础软件”或“全部结束”等方式结束基础软件后，再关闭浏览器。（如果清除缓存等，根据设置，保存的状态可能会被删除。）</li>
+        </ul>
+      </section>
+      <section class="notice">
+        <h2>支持情况</h2>
+        <dl>
+          <dt>浏览器</dt>
+          <dd>IE11+、Fx、Chrome（含 Android 版）、Mobile Safari（iOS 8 以后版本）</dd>
+          <dt>规格</dt>
+          <dd>
+            <ul>
+              <li><a href="https://github.com/Narazaka/ikadoc/blob/master/spec_sakura_script.textile" target="_blank">樱花脚本</a></li>
+              <li><a href="https://github.com/Narazaka/ikadoc/blob/master/spec_shiori.md" target="_blank">SHIORI/3.1 事件</a></li>
+            </ul>
+          </dd>
+          <dt>Ghost</dt>
+          <dd>
+            <ul>
+              <li>启动时不加载 SAORI 的华和梨</li>
+              <li>里々</li>
+              <li>启动时不加载 SAORI 的 YAYA</li>
+              <li>启动时不加载 SAORI 的文5</li>
+              <li>启动时不加载 SAORI 的华和梨7</li>
+              <li>
+                <del>仅包含标准插件的 MiyoJS</del>
+              </li>
+            </ul>
+          </dd>
+          <dt>SHIORI（栞）的限制事项</dt>
+          <dd>
+            <p>加载 SAORI 时就会崩溃。将来计划实现，但优先级较低。</p>
+            <dl>
+              <dt>里々</dt>
+              <dd>由于已将 satori_conf.txt 的 @SAORI 改写为忽略 SAORI 进行加载的处理，因此与 SAORI 相关的操作可能会引发各种问题。</dd>
+              <dd>由于包含了相当于 ssu.dll 的功能，如果只使用 ssu.dll，则可以照常运行。</dd>
+              <dt>华和梨7</dt>
+              <dd>由于使用旧通信协议 SHIORI/2.6 进行通信，可能更容易出现 bug。</dd>
+            </dl>
+          </dd>
+          <dt>基础软件功能实现情况</dt>
+          <dd>
+            <p>大致情况</p>
+            <ul>
+              <li>首次启动、启动、切换、呼叫、结束、全部结束；具备类似 SSP 的回退处理（例如没有 OnFirstBoot 时调用 OnBoot 等）</li>
+              <li>启动时信息类尽可能遵循 SSP，但 Ghost 路径、字体等被省略</li>
+              <li>支持的樱花脚本为 <a href="https://github.com/Ikagaka/SakuraScriptPlayer.js" target="_blank">SakuraScriptPlayer.js</a></li>
+              <li>Communicate 尚未经过充分测试，但姑且具备功能。可能无法运行。</li>
+              <li>换装功能尚未完成。</li>
+              <li>没有 Ghost 缓存。</li>
+            </ul>
+          </dd>
+        </dl>
+      </section>
+      <section>
+        <h2>在自己的网站上使用</h2>
+        <p>虽然部分 Ghost 可以运行，但由于状态不完整，之前并未主要发布；如果您觉得当前运行状态也可以，请使用。</p>
+        <p>已在 <a href="https://github.com/Ikagaka/Ikagaka.demo/tree/haihu" target=_blank>Ikagaka.demo (Github)</a> 发布，请按照 readme.txt 操作。</p>
+      </section>
+      <section class="please">
+        <h2>请求运行报告</h2>
+        <p>GitHub 用户：<a href="https://github.com/Ikagaka/Ikagaka.demo/issues" target="_blank">Issues</a></p>
+        <p>非 GitHub 用户・简单启动报告等：<a href="http://uka.jpn.org/test/read.cgi/unyu/1416718339/l50" target="_blank">如何か开发讨论帖</a></p>
+        <p>请报告 ○○ 已启动/运行、虽然运行但似乎因未知原因而异常、以及其他注意到的事项等。</p>
+        <p>如果可以，请尽量使用 IE、Fx、Chrome 等的开发者工具，在一定程度上确定 bug 的原因。</p>
+        <ul>
+          <li>在上述限制下运行。</li>
+          <li>樱花脚本有很多尚未支持，但如果看似已支持的脚本出现 bug，请报告。</li>
+          <li>Shell 相关也可能出现加载时错误或运行时错误。部分功能尚未实现。也请报告这些情况。</li>
+          <li>可以多重启动，但目前各 Ghost 是单独运行、彼此之间没有相互管理的模拟状态。关于此事的 bug 报告请暂缓。</li>
+          <li>与“dlopen”相关的错误是 SAORI 引起的，因此无需报告。</li>
+          <li>bug 报告不一定马上处理。因为很忙且要做的事情堆积如山，根据情况可能会长期搁置。</li>
+        </ul>
+      </section>
+    </article>
+    <footer><small>(C) 2015 Ikagaka.demo</small></footer>
+  </body>
+</html>
